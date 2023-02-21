@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:ui_kit_example/page/image_pre_view_page.dart';
 import 'package:ui_kit_example/page/toast_page.dart';
 
 import 'auto_refresh_page.dart';
@@ -16,7 +17,8 @@ class HomePage extends StatelessWidget{
   final List<PageItem> pageItems = [
     PageItem(title: "Custom Chart Page",builder: (BuildContext context)=>CustomChartPage()),
     PageItem(title: "Toast Page",builder: (BuildContext context)=>ToastPage()),
-    PageItem(title: "AutoRefresh Page",builder: (BuildContext context)=>AutoRefreshPage())
+    PageItem(title: "AutoRefresh Page",builder: (BuildContext context)=>AutoRefreshPage()),
+    PageItem(title: "ImagePreView Page",builder: (BuildContext context)=>ImagePreViewPage())
   ];
   @override
   Widget build(BuildContext context) {

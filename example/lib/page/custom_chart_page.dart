@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:ui_kit/toast.dart';
 import 'package:ui_kit/ui_kit.dart';
@@ -11,6 +13,24 @@ class CustomChartPage extends StatefulWidget{
 }
 
 class _CustomChartPage extends State<CustomChartPage>{
+  late List<CHistogramItem> histogramItems;
+  late List<CLineItem> lineItems;
+  @override
+  void initState() {
+    super.initState();
+    histogramItems = List<CHistogramItem>.generate(
+      100,
+          (index){
+        var position = Random().nextDouble() * 1000;
+        return CHistogramItem(position, "$index");
+          },
+    );
+
+    lineItems = List<CLineItem>.generate(100, (index){
+      return CLineItem(Random().nextDouble() * 1000, "${index % 12 + 1}月");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,9 +51,9 @@ class _CustomChartPage extends State<CustomChartPage>{
                       Expanded(
                         child: CustomLineChartView(
                           key: UniqueKey(),
-                          items: List<CLineItem>.generate(100, (index) => CLineItem((index % 10).toDouble() + 10, "${index % 12 + 1}月")),
+                          items: lineItems,
                           verticalMaxPoint: 10,
-                          horizontalMaxPoint:30,
+                          horizontalMaxPoint:10,
                           hasDotOnPointOfJunction:true,
                           selectedLabelBuilder: (key,value){
                             return "$key  $value";
@@ -45,22 +65,19 @@ class _CustomChartPage extends State<CustomChartPage>{
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               SizedBox(
                 height: 300,
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Row(
                     children: [
                       Expanded(
                         child: CustomHistogramChartView(
-                          items: List<CHistogramItem>.generate(
-                            100,
-                                (index) => CHistogramItem(index % 10.toDouble() + 10, "$index"),
-                          ),
-                          horizontalMaxCylinder: 20,
+                          items: histogramItems,
+                          horizontalMaxCylinder: 8,
                           verticalMaxScale: 10,
                           labelInterval:5,
                         ),

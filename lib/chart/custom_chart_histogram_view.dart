@@ -178,6 +178,7 @@ class _HistogramChartPainter extends CustomPainter {
   final double marginTop = 20;
   final double marginBottom = 20;
   final double marginRight = 20;
+  double offset = 0.0;
   bool isRepaint;
   _HistogramChartPainter({
     this.items = const [],
@@ -198,9 +199,10 @@ class _HistogramChartPainter extends CustomPainter {
     availableWidth = size.width - marginLeft - marginRight;
     availableHeight = size.height - marginTop - marginBottom;
     distance = availableWidth / ((horizontalMaxCylinder + 1) / 2 + horizontalMaxCylinder);
+    offset = scrollX % (1.5 * distance);
     double _maxDistance = items.length < horizontalMaxCylinder ? 0 : (items.length + (items.length + 1) / 2) * distance - availableWidth;
     maxScrollDistance(_maxDistance);
-    start = scrollX % (distance * 1.5) > distance ? (scrollX / (distance * 1.5)).ceil() : (scrollX / (distance * 1.5)).floor();
+    start = (scrollX / (distance * 1.5)).floor();
     paths.clear();
     var maxValue = 0.0;
     for (var position = 0; position < horizontalMaxCylinder && position < items.length - start; position++) {
@@ -208,11 +210,31 @@ class _HistogramChartPainter extends CustomPainter {
     }
     maxY = 1.2 * maxValue;
     paths.clear();
-    for (var position = 0; position < horizontalMaxCylinder && position < items.length - start; position++) {
-      var startX = distance * position + distance / 2 * (position + 1) + marginLeft;
-      var height = items[start + position].value / maxY * availableHeight;
-      var startY = size.height - marginBottom - height;
-      paths.add(_CHistogramPath(Offset(startX, startY), Offset(startX + distance, startY), Offset(startX + distance, startY + height), Offset(startX, startY + height)));
+    var initOffset = 0.0;
+    for (var position = 0; position < items.length - start; position++) {
+        var startX = initOffset + distance * (position -1) + distance / 2 * (position) + marginLeft;
+        var currentDistance = distance;
+        if(position == 0){
+          if(offset < 0.5 * distance){
+            startX = 0.5 * distance - offset + marginLeft;
+            initOffset = 0.5 * distance - offset + distance;
+          }else{
+            startX = marginLeft;
+            currentDistance = 1.5 * distance - offset;
+            initOffset = currentDistance;
+          }
+        }
+        var height = items[start + position].value / maxY * availableHeight;
+        var startY = size.height - marginBottom - height;
+        if(startX + currentDistance >=  size.width - marginRight) {
+          var leftDistance = size.width - marginRight - startX;
+          leftDistance = leftDistance < 0 ? 0 :leftDistance;
+          var availableDistance = Math.min(currentDistance,leftDistance );
+          paths.add(_CHistogramPath(Offset(startX, startY), Offset(startX + availableDistance, startY), Offset(startX + availableDistance, startY + height), Offset(startX, startY + height)));
+          break;
+        }else{
+          paths.add(_CHistogramPath(Offset(startX, startY), Offset(startX + currentDistance, startY), Offset(startX + currentDistance, startY + height), Offset(startX, startY + height)));
+        }
     }
   }
 
@@ -245,7 +267,7 @@ class _HistogramChartPainter extends CustomPainter {
       canvas.drawRect(Rect.fromLTRB(element.topLeft.dx, element.topLeft.dy, element.topRight.dx, element.bottomLeft.dy), paint);
     });
     if (selectedPosition != -1) {
-      var position = ((selectedPosition - marginLeft - distance / 4) / (1.5 * distance)).floor();
+      var position = ((selectedPosition + offset - marginLeft - distance / 4) / (1.5 * distance)).floor();
       TextPainter tp = getTextPainter(items[start + position].value.toStringAsFixed(2), color: scaleTextColor);
       var startX = tp.width > distance ? paths[position].topLeft.dx - ((tp.width - distance) / 2) : paths[position].topLeft.dx + ((distance - tp.width) / 2);
       tp.paint(canvas, Offset(startX, paths[position].topLeft.dy - tp.height - 5));

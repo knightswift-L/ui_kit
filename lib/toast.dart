@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+
 enum ToastTime {
   Long, // 2000ms
   short // 1500ms
 }
 
-void showToast({String? message, Widget? customWidget, ToastTime? toastTime,TextStyle? style,Color? backgroundColor}) {
+void showToast({String? message, Widget? customWidget, ToastTime? toastTime, TextStyle? style, Color? backgroundColor}) {
   if (message == null && customWidget == null) {
     throw "one of message and customWidget must not be null";
   }
   if (customWidget == null) {
-    Toast().showToast(ToastEvent(toastTime: toastTime ?? ToastTime.short, message: message!,backgroundColor:backgroundColor,style: style));
+    Toast().showToast(ToastEvent(toastTime: toastTime ?? ToastTime.short, message: message!, backgroundColor: backgroundColor, style: style));
   } else {
     Toast().showToast(ToastEvent(toastTime: toastTime ?? ToastTime.short, contentWidget: customWidget));
   }
@@ -21,7 +23,7 @@ class ToastEvent {
   String? message;
   TextStyle? style;
   Color? backgroundColor;
-  ToastEvent({this.toastTime = ToastTime.short, this.contentWidget, this.message,this.style,this.backgroundColor});
+  ToastEvent({this.toastTime = ToastTime.short, this.contentWidget, this.message, this.style, this.backgroundColor});
 }
 
 class Toast {
@@ -60,48 +62,61 @@ class Toast {
   }
 
   void _insertToastOverEntry(ToastEvent event) {
-    overlayState = Overlay.of(context!);
-    if(event.message == null){
-      overlayEntry = OverlayEntry(builder: (context) {
-        return Center(
-          child: UnconstrainedBox(
-            child:event.contentWidget
-          ),
-        );
-      });
-    }else{
-      TextStyle style = event.style ?? const TextStyle(inherit: false,fontSize: 16,color: Colors.white);
-      Color backgroundColor = event.backgroundColor ?? Colors.grey;
-      overlayEntry = OverlayEntry(builder: (context) {
-        return Center(
-          child: UnconstrainedBox(
-            child:Container(
-              width: getTextWidth(event.message!,style) <= MediaQuery.of(context).size.width * 0.8 - 40 ?  getTextWidth(event.message!,TextStyle(inherit: false,fontSize: 16,color: Colors.white)) + 40 :  MediaQuery.of(context).size.width * 0.8,
-              padding: const EdgeInsets.symmetric(vertical: 10,horizontal: 20),
-              decoration: BoxDecoration(
-                  color: backgroundColor,
-                  borderRadius: BorderRadius.circular(10)
+    overlayState ??= Overlay.of(context!);
+    void f() {
+      if (event.message == null) {
+        overlayEntry = OverlayEntry(builder: (context) {
+          return Center(
+            child: UnconstrainedBox(child: event.contentWidget),
+          );
+        });
+      } else {
+        TextStyle style = event.style ?? const TextStyle(inherit: false, fontSize: 16, color: Colors.white);
+        Color backgroundColor = event.backgroundColor ?? Colors.grey;
+        overlayEntry = OverlayEntry(builder: (context) {
+          return Center(
+            child: UnconstrainedBox(
+              child: Container(
+                width: getTextWidth(event.message!, style) <= MediaQuery.of(context).size.width * 0.8 - 40
+                    ? getTextWidth(event.message!, const TextStyle(inherit: false, fontSize: 16, color: Colors.white)) + 40
+                    : MediaQuery.of(context).size.width * 0.8,
+                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                decoration: BoxDecoration(color: backgroundColor, borderRadius: BorderRadius.circular(10)),
+                alignment: Alignment.center,
+                child: Text(
+                  event.message!,
+                  style: style,
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
-              alignment: Alignment.center,
-              child: Text(event.message!,style: style,textAlign: TextAlign.center,maxLines:2,overflow: TextOverflow.ellipsis,),
             ),
-          ),
-        );
+          );
+        });
+      }
+
+      if (overlayState != null && overlayEntry != null) {
+        overlayState!.insert(overlayEntry!);
+      }
+      Future.delayed(Duration(milliseconds: event.toastTime == ToastTime.short ? 1500 : 2000), () {
+        _hideToast();
       });
     }
 
-    if (overlayState != null && overlayEntry != null) {
-      overlayState!.insert(overlayEntry!);
+    if (SchedulerBinding.instance.schedulerPhase == SchedulerPhase.persistentCallbacks) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        f();
+      });
+    } else {
+      f();
     }
-    Future.delayed(Duration(milliseconds: event.toastTime == ToastTime.short ? 1500 : 2000), () {
-      _hideToast();
-    });
   }
 
-     getTextWidth(String message, TextStyle style){
-      TextSpan span = TextSpan(text: message, style: style);
-      TextPainter tp = TextPainter(text: span, textDirection: TextDirection.ltr);
-      tp.layout();
-      return tp.width;
+  getTextWidth(String message, TextStyle style) {
+    TextSpan span = TextSpan(text: message, style: style);
+    TextPainter tp = TextPainter(text: span, textDirection: TextDirection.ltr);
+    tp.layout();
+    return tp.width;
   }
 }

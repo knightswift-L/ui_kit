@@ -35,7 +35,7 @@ class CustomLineChartView extends StatefulWidget {
 }
 
 class _CustomLineChartViewState extends State<CustomLineChartView> {
-  double scrollX = double.infinity;
+  double scrollX = 0.0;
   double maxDistance = 0;
   late StreamController<_Notification> _listener;
   double startX = 0;
@@ -126,7 +126,7 @@ class _CustomLineChartViewState extends State<CustomLineChartView> {
                 items: widget.items,
                 horizontalMaxPoint: widget.horizontalMaxPoint,
                 verticalMaxPoint: widget.verticalMaxPoint,
-                scrollX: double.infinity,
+                scrollX: 0.0,
                 scaleTextColor: widget.scaleTextColor,
                 scaleLineColor: widget.scaleLineColor,
                 backgroundColor: widget.backgroundColor,
@@ -206,6 +206,7 @@ class _LineChartPainter extends CustomPainter {
     distance = availableWidth / (horizontalMaxPoint - 1);
     double _maxScrollDistance = items.length <= horizontalMaxPoint ? 0 : (distance * (items.length - 1)) - availableWidth;
     maxScrollDistance(_maxScrollDistance);
+    var offset = scrollX != 0 ? scrollX % distance:0.0;
     if (scrollX >= _maxScrollDistance) {
       start = items.length <= horizontalMaxPoint ? 0 : items.length - horizontalMaxPoint;
     } else {
@@ -218,14 +219,30 @@ class _LineChartPainter extends CustomPainter {
 
     maxY = maxValue * 1.2;
     points.clear();
-    for (var position = 0; position < horizontalMaxPoint && position < items.length; position++) {
-      points.add(_CLinePoint(distance * position + marginLeft, marginTop + availableHeight * (1 - (items[position + start].value / maxY))));
+    for (var position = 0; position + start < items.length && position < items.length; position++) {
+      var currentY = availableHeight * (1 - (items[position + start].value / maxY));
+      if(position == 0){
+        var lastY = availableHeight * (1 - (items[position + start + 1].value / maxY));
+        var k = (lastY - currentY)/distance;
+        var b= -(k * distance - lastY);
+        var latestY = offset * k + b;
+        points.add(_CLinePoint(marginLeft,marginTop+ latestY));
+      }else if((distance - offset) + distance * (position -1) + marginLeft > size.width - marginRight) {
+        var lastY = availableHeight * (1 - (items[position + start-1].value / maxY));
+        var k = (currentY -lastY)/distance;
+        var b= -(k * distance - currentY);
+        var latestY = (size.width - marginRight - ((distance - offset) + distance * (position -2) + marginLeft)) * k + b;
+        points.add(_CLinePoint(size.width - marginRight, marginTop + latestY));
+        break;
+      }else{
+        points.add(_CLinePoint((distance - offset) + distance * (position -1) + marginLeft, marginTop + currentY));
+      }
     }
 
     if (selectedLocation == -1) {
       _selectedPosition = null;
     } else {
-      var _selectedLocation = selectedLocation - marginLeft;
+      var _selectedLocation = selectedLocation - marginLeft + offset;
       _selectedPosition = _selectedLocation % distance > distance / 2 ? (_selectedLocation / distance).ceil() : (_selectedLocation / distance).floor();
     }
   }

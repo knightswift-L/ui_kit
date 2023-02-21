@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AutoRefreshPage extends StatefulWidget {
+  const AutoRefreshPage({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _AutoRefreshPageState();
@@ -12,14 +14,14 @@ class _AutoRefreshPageState extends State<AutoRefreshPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("AutoRefresh Page"),
+        title: const Text("AutoRefresh Page"),
       ),
       body: RefreshIndicator(
         onRefresh: () {
-          return Future.delayed(Duration(milliseconds: 2000), () {});
+          return Future.delayed(const Duration(milliseconds: 2000), () {});
         },
         child: ListView.builder(
-          physics: AlwaysScrollableScrollPhysics(),
+          physics: const AlwaysScrollableScrollPhysics(),
           itemBuilder: (BuildContext context, int index) {
             return Container(
               width: double.infinity,
