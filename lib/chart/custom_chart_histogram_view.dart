@@ -279,7 +279,7 @@ class _HistogramChartPainter extends CustomPainter {
     canvas.drawRect(Rect.fromLTRB(0, 0, size.width, size.height), paint);
 
     paint.color = Colors.white;
-    canvas.drawLine(Offset(50, 20), Offset(50, size.height - 20), paint);
+    canvas.drawLine(const Offset(50, 20), Offset(50, size.height - 20), paint);
     canvas.drawLine(Offset(50, size.height - 20), Offset(size.width - 20, size.height - 20), paint);
   }
 

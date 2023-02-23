@@ -223,15 +223,11 @@ class _LineChartPainter extends CustomPainter {
       var currentY = availableHeight * (1 - (items[position + start].value / maxY));
       if(position == 0){
         var lastY = availableHeight * (1 - (items[position + start + 1].value / maxY));
-        var k = (lastY - currentY)/distance;
-        var b= -(k * distance - lastY);
-        var latestY = offset * k + b;
+        var latestY = MathUtil.getTargetY(0, currentY, distance, lastY, offset);
         points.add(_CLinePoint(marginLeft,marginTop+ latestY));
       }else if((distance - offset) + distance * (position -1) + marginLeft > size.width - marginRight) {
         var lastY = availableHeight * (1 - (items[position + start-1].value / maxY));
-        var k = (currentY -lastY)/distance;
-        var b= -(k * distance - currentY);
-        var latestY = (size.width - marginRight - ((distance - offset) + distance * (position -2) + marginLeft)) * k + b;
+         var latestY = MathUtil.getTargetY(0, lastY, distance, currentY, size.width - marginRight - ((distance - offset) + distance * (position -2) + marginLeft));
         points.add(_CLinePoint(size.width - marginRight, marginTop + latestY));
         break;
       }else{
@@ -269,15 +265,17 @@ class _LineChartPainter extends CustomPainter {
     }
 
     for (var position = 0; position < horizontalMaxPoint; position++) {
-      var positionX = distance * position + marginLeft;
+      var positionX = distance * position + marginLeft - (scrollX % distance);
       paint.color = scaleLineColor;
-      canvas.drawLine(Offset(positionX, size.height - marginBottom), Offset(positionX, size.height - marginBottom - 5), paint);
-      if (position % labelInterval == 0 && position + start < items.length) {
-        TextPainter tp = getTextPainter(items[start + position].key, color: scaleTextColor);
-        tp.paint(
-          canvas,
-          Offset(positionX - tp.width / 2, size.height - marginBottom + 5),
-        );
+      if(positionX > marginLeft) {
+        canvas.drawLine(Offset(positionX, size.height - marginBottom), Offset(positionX, size.height - marginBottom - 5), paint);
+        if ((position + start) % labelInterval == 0 && position + start < items.length) {
+          TextPainter tp = getTextPainter(items[start + position].key, color: scaleTextColor);
+          tp.paint(
+            canvas,
+            Offset(positionX - tp.width / 2, size.height - marginBottom + 5),
+          );
+        }
       }
     }
   }
