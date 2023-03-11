@@ -1,18 +1,18 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ui_kit/toast.dart';
 import 'package:ui_kit/ui_kit.dart';
 
-class CustomChartPage extends StatefulWidget{
+class CustomChartPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _CustomChartPage();
   }
-
 }
 
-class _CustomChartPage extends State<CustomChartPage>{
+class _CustomChartPage extends State<CustomChartPage> {
   late List<CHistogramItem> histogramItems;
   late List<CLineItem> lineItems;
   @override
@@ -20,13 +20,13 @@ class _CustomChartPage extends State<CustomChartPage>{
     super.initState();
     histogramItems = List<CHistogramItem>.generate(
       100,
-          (index){
+      (index) {
         var position = Random().nextDouble() * 1000;
         return CHistogramItem(position, "$index");
-          },
+      },
     );
 
-    lineItems = List<CLineItem>.generate(100, (index){
+    lineItems = List<CLineItem>.generate(100, (index) {
       return CLineItem(Random().nextDouble() * 1000, "${index % 12 + 1}月");
     });
   }
@@ -53,9 +53,9 @@ class _CustomChartPage extends State<CustomChartPage>{
                           key: UniqueKey(),
                           items: lineItems,
                           verticalMaxPoint: 10,
-                          horizontalMaxPoint:10,
-                          hasDotOnPointOfJunction:true,
-                          selectedLabelBuilder: (key,value){
+                          horizontalMaxPoint: 10,
+                          hasDotOnPointOfJunction: true,
+                          selectedLabelBuilder: (key, value) {
                             return "$key  $value";
                           },
                           selectedColor: Colors.red,
@@ -79,19 +79,19 @@ class _CustomChartPage extends State<CustomChartPage>{
                           items: histogramItems,
                           horizontalMaxCylinder: 8,
                           verticalMaxScale: 10,
-                          labelInterval:5,
+                          labelInterval: 5,
                         ),
                       )
                     ],
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
-              Container(
-                width: 200,
-                height: 200,
+              SizedBox(
+                width: 300,
+                height: 300,
                 child: CustomPieChartView(
                   items: [
                     CPieItem(100, "食品", Colors.red),
@@ -100,18 +100,80 @@ class _CustomChartPage extends State<CustomChartPage>{
                     CPieItem(300, "其他", Colors.pink),
                   ],
                 ),
+              ),
+              CustomRadarView(
+                width: 400,
+                height: 400,
+                level: 5,
+                items: [
+                  CustomRadarItem(title: "A", value: 5, key: "A"),
+                  CustomRadarItem(title: "B", value: 5, key: "B"),
+                  CustomRadarItem(title: "C", value: 5, key: "C"),
+                  CustomRadarItem(title: "D", value: 5, key: "D"),
+                  CustomRadarItem(title: "E", value: 5, key: "E"),
+                  CustomRadarItem(title: "F", value: 5, key: "F"),
+                  CustomRadarItem(title: "G", value: 5, key: "G"),
+                  CustomRadarItem(title: "H", value: 5, key: "H"),
+                  CustomRadarItem(title: "I", value: 5, key: "I"),
+                  CustomRadarItem(title: "J", value: 5, key: "J")
+                ],
+                maps: [
+                  CustomRadarGroup(title: "03-10", maps: {
+                    "A": CustomRadarItem(title: "A", value: 5, key: "A"),
+                    "B": CustomRadarItem(title: "A", value: 1, key: "B"),
+                    "C": CustomRadarItem(title: "A", value: 5, key: "C"),
+                    "D": CustomRadarItem(title: "A", value: 3, key: "D"),
+                    "E": CustomRadarItem(title: "A", value: 5, key: "E"),
+                    "F": CustomRadarItem(title: "A", value: 2, key: "F"),
+                    "G": CustomRadarItem(title: "A", value: 5, key: "G"),
+                    "H": CustomRadarItem(title: "A", value: 4, key: "H"),
+                    "I": CustomRadarItem(title: "A", value: 5, key: "I"),
+                    "J": CustomRadarItem(title: "A", value: 0, key: "J")
+                  }, color: Colors.blue),
+                  CustomRadarGroup(title: "03-11", maps: {
+                    "A": CustomRadarItem(title: "A", value: 2, key: "A"),
+                    "B": CustomRadarItem(title: "A", value: 1, key: "B"),
+                    "C": CustomRadarItem(title: "A", value: 4, key: "C"),
+                    "D": CustomRadarItem(title: "A", value: 3, key: "D"),
+                    "E": CustomRadarItem(title: "A", value: 3, key: "E"),
+                    "F": CustomRadarItem(title: "A", value: 5, key: "F"),
+                    "G": CustomRadarItem(title: "A", value: 1, key: "G"),
+                    "H": CustomRadarItem(title: "A", value: 3, key: "H"),
+                    "I": CustomRadarItem(title: "A", value: 2, key: "I"),
+                    "J": CustomRadarItem(title: "A", value: 4, key: "J")
+                  }, color: Colors.redAccent),
+                  CustomRadarGroup(title: "03-12", maps: {
+                    "A": CustomRadarItem(title: "A", value: 1, key: "A"),
+                    "B": CustomRadarItem(title: "A", value: 1, key: "B"),
+                    "C": CustomRadarItem(title: "A", value: 4, key: "C"),
+                    "D": CustomRadarItem(title: "A", value: 5, key: "D"),
+                    "E": CustomRadarItem(title: "A", value: 2, key: "E"),
+                    "F": CustomRadarItem(title: "A", value: 2, key: "F"),
+                    "G": CustomRadarItem(title: "A", value: 5, key: "G"),
+                    "H": CustomRadarItem(title: "A", value: 1, key: "H"),
+                    "I": CustomRadarItem(title: "A", value: 4, key: "I"),
+                    "J": CustomRadarItem(title: "A", value: 1, key: "J")
+                  }, color: Colors.orange),
+                  CustomRadarGroup(title: "03-13", maps: {
+                    "A": CustomRadarItem(title: "A", value: 3, key: "A"),
+                    "B": CustomRadarItem(title: "A", value: 1, key: "B"),
+                    "C": CustomRadarItem(title: "A", value: 5, key: "C"),
+                    "D": CustomRadarItem(title: "A", value: 0, key: "D"),
+                    "E": CustomRadarItem(title: "A", value: 1, key: "E"),
+                    "F": CustomRadarItem(title: "A", value: 5, key: "F"),
+                    "G": CustomRadarItem(title: "A", value: 4, key: "G"),
+                    "H": CustomRadarItem(title: "A", value: 1, key: "H"),
+                    "I": CustomRadarItem(title: "A", value: 2, key: "I"),
+                    "J": CustomRadarItem(title: "A", value: 3, key: "J")
+                  }, color: Colors.purple),
+
+
+                ],
               )
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: (){
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
-
 }

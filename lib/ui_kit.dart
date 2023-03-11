@@ -12,3 +12,4 @@ part 'input/password_input_view.dart';
 part 'chart/custom_chart_line_view.dart';
 part 'chart/custom_chart_pie_view.dart';
 part 'chart/custom_chart_histogram_view.dart';
+part 'chart/custom_radar_view.dart';
