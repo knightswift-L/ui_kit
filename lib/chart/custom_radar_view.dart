@@ -26,7 +26,7 @@ class CustomRadarView extends StatefulWidget {
   final List<CustomRadarItem> items;
   final int level;
   final List<CustomRadarGroup> maps;
-  const CustomRadarView({
+   const CustomRadarView({
     super.key,
     required this.width,
     required this.height,
@@ -72,29 +72,29 @@ class CustomRadarViewPainter extends CustomPainter {
     drawCategory(canvas, size);
   }
 
-  void drawCategory(Canvas canvas,Size size){
-     double width = 0.0;
-     for(CustomRadarGroup group in maps){
-       TextPainter textPainter = TextPainter(
-           text: TextSpan(
-               text: group.title,
-               style: const TextStyle(color: Colors.black)),
-           textDirection: TextDirection.ltr);
-       textPainter.layout();
-       width += textPainter.width;
-     }
-     var offsetX = (size.width - 10 * (maps.length - 1 ) - width)/2;
-     for(CustomRadarGroup group in maps){
-       TextPainter textPainter = TextPainter(
-           text: TextSpan(
-               text: group.title,
-               style: TextStyle(color: group.color)),
-           textDirection: TextDirection.ltr);
-       textPainter.layout();
-       textPainter.paint(canvas, Offset(offsetX,size.height - textPainter.height -5));
-       offsetX += 10 + textPainter.width;
-     }
+  void drawCategory(Canvas canvas, Size size) {
+    double width = 0.0;
+    for (CustomRadarGroup group in maps) {
+      TextPainter textPainter = TextPainter(
+          text: TextSpan(
+              text: group.title, style: const TextStyle(color: Colors.black)),
+          textDirection: TextDirection.ltr);
+      textPainter.layout();
+      width += textPainter.width;
+    }
+    var offsetX = (size.width - 10 * (maps.length - 1) - width) / 2;
+    for (CustomRadarGroup group in maps) {
+      TextPainter textPainter = TextPainter(
+          text:
+              TextSpan(text: group.title, style: TextStyle(color: group.color)),
+          textDirection: TextDirection.ltr);
+      textPainter.layout();
+      textPainter.paint(
+          canvas, Offset(offsetX, size.height - textPainter.height - 5));
+      offsetX += 10 + textPainter.width;
+    }
   }
+
   void drawData(Canvas canvas, Offset center, double radius) {
     var paint = Paint();
     var length = items.length;
@@ -104,7 +104,6 @@ class CustomRadarViewPainter extends CustomPainter {
           radius *
               ((element.maps[items.first.key]?.value ?? 0) / items.first.value),
           Math.pi * 2 / length * 0);
-      Coordinate? pre;
       var path = Path();
       path.moveTo(center.dx + point1.x, center.dy - point1.y);
       for (var index = 1; index < items.length; index++) {
@@ -157,6 +156,8 @@ class CustomRadarViewPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomRadarViewPainter oldDelegate) {
-    return oldDelegate.items != items || oldDelegate.maps != maps || oldDelegate.level != level;
+    return oldDelegate.items != items ||
+        oldDelegate.maps != maps ||
+        oldDelegate.level != level;
   }
 }

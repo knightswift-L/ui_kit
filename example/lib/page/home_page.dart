@@ -5,6 +5,7 @@ import 'package:ui_kit_example/page/toast_page.dart';
 
 import 'auto_refresh_page.dart';
 import 'custom_chart_page.dart';
+import 'date_picker_page.dart';
 
 typedef Widget PageRouteBuilder(BuildContext context);
 class PageItem{
@@ -18,7 +19,8 @@ class HomePage extends StatelessWidget{
     PageItem(title: "Custom Chart Page",builder: (BuildContext context)=>CustomChartPage()),
     PageItem(title: "Toast Page",builder: (BuildContext context)=>ToastPage()),
     PageItem(title: "AutoRefresh Page",builder: (BuildContext context)=>AutoRefreshPage()),
-    PageItem(title: "ImagePreView Page",builder: (BuildContext context)=>ImagePreViewPage())
+    PageItem(title: "ImagePreView Page",builder: (BuildContext context)=>ImagePreViewPage()),
+    PageItem(title: "DatePicker Page",builder: (BuildContext context)=>DatePickerPage())
   ];
   @override
   Widget build(BuildContext context) {
