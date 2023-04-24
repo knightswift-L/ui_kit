@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ui_kit_example/page/image_pre_view_page.dart';
 import 'package:ui_kit_example/page/toast_page.dart';
 
+import 'animated_menu_page.dart';
 import 'auto_refresh_page.dart';
 import 'custom_chart_page.dart';
 import 'date_picker_page.dart';
@@ -20,7 +21,9 @@ class HomePage extends StatelessWidget{
     PageItem(title: "Toast Page",builder: (BuildContext context)=>ToastPage()),
     PageItem(title: "AutoRefresh Page",builder: (BuildContext context)=>AutoRefreshPage()),
     PageItem(title: "ImagePreView Page",builder: (BuildContext context)=>ImagePreViewPage()),
-    PageItem(title: "DatePicker Page",builder: (BuildContext context)=>DatePickerPage())
+    PageItem(title: "DatePicker Page",builder: (BuildContext context)=>DatePickerPage()),
+    //AnimatedMenuPage
+    PageItem(title: "AnimatedMenu Page",builder: (BuildContext context)=>AnimatedMenuPage()),
   ];
   @override
   Widget build(BuildContext context) {
