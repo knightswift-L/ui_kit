@@ -21,7 +21,15 @@ class _ImagePreViewPageState extends State<ImagePreViewPage>{
       body: Container(
         width: 300,
         height: 300,
-        child: ImagePreView(),
+        child: GestureDetector(
+          onTap: (){
+
+          },
+          child: Container(
+            height: 100,
+            width: 100,
+          ),
+        )
       ),
     );
   }

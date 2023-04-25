@@ -44,7 +44,7 @@ class CustomRadarView extends StatefulWidget {
 class _CustomRadarViewState extends State<CustomRadarView> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return RepaintBoundary(child: SizedBox(
       width: widget.width,
       height: widget.height,
       child: CustomPaint(
@@ -54,7 +54,7 @@ class _CustomRadarViewState extends State<CustomRadarView> {
           widget.maps,
         ),
       ),
-    );
+    ),);
   }
 }
 

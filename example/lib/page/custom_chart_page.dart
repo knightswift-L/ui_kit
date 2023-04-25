@@ -27,7 +27,7 @@ class _CustomChartPage extends State<CustomChartPage> {
     );
 
     lineItems = List<CLineItem>.generate(100, (index) {
-      return CLineItem(Random().nextDouble() * 1000, "${index % 12 + 1}月");
+      return CLineItem(Random().nextDouble() * 30, "${index % 12 + 1}月");
     });
   }
 
@@ -43,7 +43,8 @@ class _CustomChartPage extends State<CustomChartPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               SizedBox(
-                height: 300,
+                height: 200,
+                // width: 200,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   child: Row(
@@ -52,8 +53,9 @@ class _CustomChartPage extends State<CustomChartPage> {
                         child: CustomLineChartView(
                           key: UniqueKey(),
                           items: lineItems,
-                          verticalMaxPoint: 10,
+                          verticalMaxPoint: 5,
                           horizontalMaxPoint: 10,
+                          labelInterval: 20,
                           hasDotOnPointOfJunction: true,
                           selectedLabelBuilder: (key, value) {
                             return "$key  $value";

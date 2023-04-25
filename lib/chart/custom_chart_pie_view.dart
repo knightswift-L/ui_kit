@@ -45,34 +45,36 @@ class _CustomPieChartViewState extends State<CustomPieChartView> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPressStart: (LongPressStartDetails detail) {
-        _listener.add(_PieNotification(detail.localPosition, true));
-      },
-      onLongPressEnd: (LongPressEndDetails detail) {
-        _listener.add(_PieNotification(detail.localPosition, false));
-      },
-      child: StreamBuilder(
-        stream: _listener.stream,
-        builder: (BuildContext context, AsyncSnapshot<_PieNotification> snapshot) {
-          if (snapshot.hasData) {
-            return SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: CustomPaint(
-                painter: _PieChartPainter(items: widget.items, pieNotification: snapshot.data!),
-              ),
-            );
-          } else {
-            return SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: CustomPaint(
-                painter: _PieChartPainter(items: widget.items, pieNotification: _PieNotification(Offset(0, 0), false)),
-              ),
-            );
-          }
+    return RepaintBoundary(
+      child: GestureDetector(
+        onLongPressStart: (LongPressStartDetails detail) {
+          _listener.add(_PieNotification(detail.localPosition, true));
         },
+        onLongPressEnd: (LongPressEndDetails detail) {
+          _listener.add(_PieNotification(detail.localPosition, false));
+        },
+        child: StreamBuilder(
+          stream: _listener.stream,
+          builder: (BuildContext context, AsyncSnapshot<_PieNotification> snapshot) {
+            if (snapshot.hasData) {
+              return SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: CustomPaint(
+                  painter: _PieChartPainter(items: widget.items, pieNotification: snapshot.data!),
+                ),
+              );
+            } else {
+              return SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: CustomPaint(
+                  painter: _PieChartPainter(items: widget.items, pieNotification: _PieNotification(Offset(0, 0), false)),
+                ),
+              );
+            }
+          },
+        ),
       ),
     );
   }

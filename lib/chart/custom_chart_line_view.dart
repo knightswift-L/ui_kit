@@ -10,6 +10,9 @@ class _CLinePoint {
   double px;
   double py;
   _CLinePoint(this.px, this.py);
+  toOffset(){
+    return Offset(px, py);
+  }
 }
 
 typedef String SelectedLabelBuilder(String key, double value);
@@ -34,17 +37,25 @@ class CustomLineChartView extends StatefulWidget {
   }
 }
 
-class _CustomLineChartViewState extends State<CustomLineChartView> {
+class _CustomLineChartViewState extends State<CustomLineChartView> with SingleTickerProviderStateMixin {
   double scrollX = 0.0;
   double maxDistance = 0;
   late StreamController<_Notification> _listener;
   double startX = 0;
   _Notification notification = _Notification();
-
+  late AnimationController animationController;
+  double currentAnimationValue = 0.0;
   @override
   void initState() {
     super.initState();
     _listener = StreamController<_Notification>();
+    animationController = AnimationController(vsync: this,value: 1.0,duration: const Duration(seconds: 1))..addListener(() {
+      currentAnimationValue = animationController.value;
+      _listener.add(_Notification()..animatedValue = animationController.value..scrollX = 0.0);
+    });
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      animationController.forward(from: 0.0);
+    });
   }
 
   @override
@@ -55,39 +66,73 @@ class _CustomLineChartViewState extends State<CustomLineChartView> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onHorizontalDragDown: (DragDownDetails details) {
-        startX = details.localPosition.dx;
-      },
-      onHorizontalDragUpdate: (DragUpdateDetails details) {
-        var current = details.localPosition.dx;
-        if (scrollX + (startX - current) > maxDistance) {
-          scrollX = maxDistance;
-        } else if (scrollX + (startX - current) < 0) {
-          scrollX = 0;
-        } else {
-          scrollX = scrollX + (startX - current);
-        }
-        notification.scrollX = scrollX;
-        _listener.add(notification);
-        startX = current;
-      },
-      onHorizontalDragEnd: (DragEndDetails details) {
-        startX = 0;
-      },
-      onLongPressStart: (LongPressStartDetails details) {
-        notification.scrollX = scrollX;
-        notification.selected = details.localPosition.dx;
-        _listener.add(notification);
-      },
-      onLongPressEnd: (LongPressEndDetails details) {
-        notification.selected = -1;
-        _listener.add(notification);
-      },
-      child: StreamBuilder(
-        stream: _listener.stream,
-        builder: (BuildContext context, AsyncSnapshot<_Notification> snapshot) {
-          if (snapshot.hasData) {
+    return RepaintBoundary(
+      child: GestureDetector(
+        onHorizontalDragDown: (DragDownDetails details) {
+          startX = details.localPosition.dx;
+        },
+        onHorizontalDragUpdate: (DragUpdateDetails details) {
+          var current = details.localPosition.dx;
+          if (scrollX + (startX - current) > maxDistance) {
+            scrollX = maxDistance;
+          } else if (scrollX + (startX - current) < 0) {
+            scrollX = 0;
+          } else {
+            scrollX = scrollX + (startX - current);
+          }
+          notification.scrollX = scrollX;
+          notification.animatedValue = currentAnimationValue;
+          _listener.add(notification);
+          startX = current;
+        },
+        onHorizontalDragEnd: (DragEndDetails details) {
+          startX = 0;
+        },
+        onLongPressStart: (LongPressStartDetails details) {
+          notification.scrollX = scrollX;
+          notification.selected = details.localPosition.dx;
+          notification.animatedValue = currentAnimationValue;
+          _listener.add(notification);
+        },
+        onLongPressEnd: (LongPressEndDetails details) {
+          notification.selected = -1;
+          notification.animatedValue = currentAnimationValue;
+          _listener.add(notification);
+        },
+        child: StreamBuilder(
+          stream: _listener.stream,
+          builder: (BuildContext context, AsyncSnapshot<_Notification> snapshot) {
+            if (snapshot.hasData) {
+              return SizedBox(
+                width: double.infinity,
+                height: double.infinity,
+                child: CustomPaint(
+                  painter: _LineChartPainter(
+                    key: UniqueKey(),
+                    items: widget.items,
+                    horizontalMaxPoint: widget.horizontalMaxPoint,
+                    verticalMaxPoint: widget.verticalMaxPoint,
+                    scrollX: snapshot.data!.scrollX,
+                    selectedLocation: snapshot.data!.selected,
+                    scaleTextColor: widget.scaleTextColor,
+                    scaleLineColor: widget.scaleLineColor,
+                    backgroundColor: widget.backgroundColor,
+                    lineColor: widget.lineColor,
+                    labelInterval: widget.labelInterval,
+                    hasDotOnPointOfJunction: widget.hasDotOnPointOfJunction,
+                    selectedColor: widget.selectedColor,
+                    selectedLabelBuilder: widget.selectedLabelBuilder,
+                    animatedValue: snapshot.data!.animatedValue,
+                    maxScrollDistance: (distance) {
+                      if (scrollX > distance && widget.items.length > 0) {
+                        scrollX = distance;
+                      }
+                      maxDistance = distance;
+                    },
+                  ),
+                ),
+              );
+            }
             return SizedBox(
               width: double.infinity,
               height: double.infinity,
@@ -97,8 +142,7 @@ class _CustomLineChartViewState extends State<CustomLineChartView> {
                   items: widget.items,
                   horizontalMaxPoint: widget.horizontalMaxPoint,
                   verticalMaxPoint: widget.verticalMaxPoint,
-                  scrollX: snapshot.data!.scrollX,
-                  selectedLocation: snapshot.data!.selected,
+                  scrollX: 0.0,
                   scaleTextColor: widget.scaleTextColor,
                   scaleLineColor: widget.scaleLineColor,
                   backgroundColor: widget.backgroundColor,
@@ -106,9 +150,10 @@ class _CustomLineChartViewState extends State<CustomLineChartView> {
                   labelInterval: widget.labelInterval,
                   hasDotOnPointOfJunction: widget.hasDotOnPointOfJunction,
                   selectedColor: widget.selectedColor,
+                  animatedValue: 0.0,
                   selectedLabelBuilder: widget.selectedLabelBuilder,
                   maxScrollDistance: (distance) {
-                    if (scrollX > distance && widget.items.length > 0) {
+                    if (scrollX > distance && widget.items != null && widget.items.length > 0) {
                       scrollX = distance;
                     }
                     maxDistance = distance;
@@ -116,35 +161,8 @@ class _CustomLineChartViewState extends State<CustomLineChartView> {
                 ),
               ),
             );
-          }
-          return SizedBox(
-            width: double.infinity,
-            height: double.infinity,
-            child: CustomPaint(
-              painter: _LineChartPainter(
-                key: UniqueKey(),
-                items: widget.items,
-                horizontalMaxPoint: widget.horizontalMaxPoint,
-                verticalMaxPoint: widget.verticalMaxPoint,
-                scrollX: 0.0,
-                scaleTextColor: widget.scaleTextColor,
-                scaleLineColor: widget.scaleLineColor,
-                backgroundColor: widget.backgroundColor,
-                lineColor: widget.lineColor,
-                labelInterval: widget.labelInterval,
-                hasDotOnPointOfJunction: widget.hasDotOnPointOfJunction,
-                selectedColor: widget.selectedColor,
-                selectedLabelBuilder: widget.selectedLabelBuilder,
-                maxScrollDistance: (distance) {
-                  if (scrollX > distance && widget.items != null && widget.items.length > 0) {
-                    scrollX = distance;
-                  }
-                  maxDistance = distance;
-                },
-              ),
-            ),
-          );
-        },
+          },
+        ),
       ),
     );
   }
@@ -154,6 +172,7 @@ class _Notification {
   double scrollX = double.infinity;
   double selected = -1;
   bool isRepaint = false;
+  double animatedValue = 0.0;
 }
 
 class _LineChartPainter extends CustomPainter {
@@ -181,6 +200,7 @@ class _LineChartPainter extends CustomPainter {
   final double marginTop = 20;
   final double marginBottom = 20;
   final double marginRight = 20;
+  final double animatedValue;
   _LineChartPainter({
     Key? key,
     required this.items,
@@ -197,6 +217,7 @@ class _LineChartPainter extends CustomPainter {
     required this.selectedColor,
     this.selectedLabelBuilder,
     required this.maxScrollDistance,
+    this.animatedValue = 1.0
   });
   double maxY = 0;
   double distance = 0;
@@ -213,11 +234,11 @@ class _LineChartPainter extends CustomPainter {
       start = (scrollX / distance).floor().toInt();
     }
     var maxValue = 0.0;
-    for (var position = start; position < start + horizontalMaxPoint && position < items.length; position++) {
+    for (var position = 0;  position < items.length; position++) {
       maxValue = maxValue > items[position].value ? maxValue : items[position].value;
     }
 
-    maxY = maxValue * 1.2;
+    maxY = maxValue;
     points.clear();
     for (var position = 0; position + start < items.length && position < items.length; position++) {
       var currentY = availableHeight * (1 - (items[position + start].value / maxY));
@@ -281,22 +302,56 @@ class _LineChartPainter extends CustomPainter {
   }
 
   drawBrokenLine(Canvas canvas, Size size) {
+    var shader =  LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        tileMode: TileMode.clamp,
+        colors: [Colors.blue.withOpacity(0.6),Colors.transparent])
+        .createShader(Rect.fromLTRB(30, 30, size.width-30, size.height-30));
     var paint = Paint()
+    ..shader = shader
       ..isAntiAlias = true
       ..strokeWidth = 1
       ..color = lineColor;
     paint.style = PaintingStyle.fill;
-    for (var position = 0; position < points.length - 1; position++) {
-      canvas.drawLine(Offset(points[position].px, points[position].py), Offset(points[position + 1].px, points[position + 1].py), paint);
+    var path = Path();
+    var temp = points.map((e) => Point(e.px,e.py)).toList();
+    var generate = temp.smooth(200).map((e) => _CLinePoint(e.x.toDouble(), e.y.toDouble())).toList();
+    for (var position = 0; position < generate.length; position++) {
+      if(position == 0 ){
+        path.moveTo(generate[position].px, generate[position].py);
+      }else{
+        path.lineTo(generate[position].px, generate[position].py);
+        }
     }
+    // canvas.drawPath(path, paint);
+    var pathMetrics = path.computeMetrics(forceClosed: false);
+    var list = pathMetrics.toList();
+    var length = list.length;
+    if(length > 1){
+      length = (length * animatedValue).toInt();
+    }
+    Path newPath = Path();
+    if(length == 1){
+      var extractPath =list[0].extractPath(0, list[0].length * animatedValue, startWithMoveTo: true);
+      newPath.addPath(extractPath, const Offset(0, 0));
+      var rect =extractPath.getBounds();
+      newPath.lineTo(rect.right, size.height-marginBottom);
+      newPath.lineTo(rect.left,size.height-marginBottom);
+      newPath.lineTo(rect.left, points.first.py);
+    }
+    canvas.drawPath(newPath, paint);
 
     paint.style = PaintingStyle.fill;
+    paint.strokeWidth = 6;
     if (hasDotOnPointOfJunction) {
+      paint.shader = null;
+      paint.style = PaintingStyle.stroke;
       for (var position = 0; position < points.length; position++) {
         if (position == _selectedPosition) {
           continue;
         }
-        canvas.drawCircle(Offset(points[position].px, points[position].py), 3, paint);
+        // canvas.drawCircle(Offset(points[position].px, points[position].py), 3, paint);
       }
     }
   }
@@ -318,7 +373,7 @@ class _LineChartPainter extends CustomPainter {
     var paint = Paint()
       ..isAntiAlias = true
       ..strokeWidth = 1
-      ..color = backgroundColor;
+      ..color = Colors.grey;
     canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
   }
 
@@ -344,7 +399,7 @@ class _LineChartPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
+  bool shouldRepaint(covariant _LineChartPainter oldDelegate) {
     return true;
   }
 }

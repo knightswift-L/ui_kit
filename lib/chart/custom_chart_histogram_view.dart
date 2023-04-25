@@ -65,7 +65,7 @@ class _CustomHistogramChartViewState extends State<CustomHistogramChartView> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return RepaintBoundary(child: GestureDetector(
       onHorizontalDragDown: (DragDownDetails details) {
         startX = details.localPosition.dx;
       },
@@ -140,15 +140,15 @@ class _CustomHistogramChartViewState extends State<CustomHistogramChartView> {
                   verticalMaxScale: widget.verticalMaxScale,
                   cylinderColor: widget.cylinderColor,
                   labelInterval: widget.labelInterval,
-                    maxScrollDistance: (distance){
-                      maxDistance = distance;
+                  maxScrollDistance: (distance){
+                    maxDistance = distance;
                   },
                   isRepaint:false,
                 ),
               ));
         },
       ),
-    );
+    ),);
   }
 }
 

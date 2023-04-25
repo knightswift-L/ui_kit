@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ui_kit/refresh_list/custom_refresh_list.dart';
 
 class AutoRefreshPage extends StatefulWidget {
   const AutoRefreshPage({super.key});
@@ -16,22 +17,14 @@ class _AutoRefreshPageState extends State<AutoRefreshPage> {
       appBar: AppBar(
         title: const Text("AutoRefresh Page"),
       ),
-      body: RefreshIndicator(
-        onRefresh: () {
-          return Future.delayed(const Duration(milliseconds: 2000), () {});
+      body: EasyRefreshList(
+        onRefresh: (){
+          return Future.value(true);
         },
-        child: ListView.builder(
-          physics: const AlwaysScrollableScrollPhysics(),
-          itemBuilder: (BuildContext context, int index) {
-            return Container(
-              width: double.infinity,
-              height: 100,
-              color: index % 2 == 0 ? Colors.blue : Colors.red,
-            );
-          },
-          itemCount: 10,
-        ),
-      ),
+        onLoad: (){
+          return Future.value(true);
+        },
+        slivers: [],),
     );
   }
 }

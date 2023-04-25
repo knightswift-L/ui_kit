@@ -60,6 +60,14 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    signingConfigs {
+        debug {
+            storePassword 'LLH771452'
+            storeFile file('../debug.keystore')
+            keyPassword 'LLH771452'
+            keyAlias 'debug'
+        }
+    }
 }
 
 flutter {
