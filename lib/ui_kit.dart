@@ -1,9 +1,13 @@
 library ui_kit;
 import 'dart:async';
 import 'dart:math' as Math;
+import 'dart:math';
 import 'dart:ui';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:ui_kit/util/math_util.dart';
 import './common/wheel_list_view.dart';
 import 'package:flutter/services.dart';
@@ -13,3 +17,5 @@ part 'chart/custom_chart_line_view.dart';
 part 'chart/custom_chart_pie_view.dart';
 part 'chart/custom_chart_histogram_view.dart';
 part 'chart/custom_radar_view.dart';
+part 'animated/animated_menu_view.dart';
+part 'animated/dismissible_view.dart';

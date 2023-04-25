@@ -7,6 +7,7 @@ import 'animated_menu_page.dart';
 import 'auto_refresh_page.dart';
 import 'custom_chart_page.dart';
 import 'date_picker_page.dart';
+import 'dismissible_view_page.dart';
 
 typedef Widget PageRouteBuilder(BuildContext context);
 class PageItem{
@@ -24,6 +25,8 @@ class HomePage extends StatelessWidget{
     PageItem(title: "DatePicker Page",builder: (BuildContext context)=>DatePickerPage()),
     //AnimatedMenuPage
     PageItem(title: "AnimatedMenu Page",builder: (BuildContext context)=>AnimatedMenuPage()),
+    //DismissibleViewPage
+    PageItem(title: "DismissibleView Page",builder: (BuildContext context)=>DismissibleViewPage()),
   ];
   @override
   Widget build(BuildContext context) {

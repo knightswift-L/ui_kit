@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ui_kit/animated/animated_menu_view.dart';
+import 'package:ui_kit/ui_kit.dart';
 
 class AnimatedMenuPage extends StatefulWidget {
   const AnimatedMenuPage({super.key});
@@ -15,11 +15,11 @@ class _AnimatedMenuPageState extends State<AnimatedMenuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("ExamplePage"),
+        title: const Text("ExamplePage"),
       ),
       body: Center(
         child: AnimatedMenuView(
-          layout: Layout.left,
+          layout: Layout.around,
           actionChild: [
             Container(
               width: 30,

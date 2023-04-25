@@ -1,8 +1,4 @@
-import 'dart:math';
-import 'dart:ui';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+part of ui_kit;
 
 enum Layout {
   top,
@@ -174,7 +170,7 @@ class _AnimatedPageState extends State<_AnimatedPage>
             children: [
               CustomAnimatedMultiLayout(
                 position: widget.offset,
-                radius: 150,
+                radius: widget.radius,
                 animatedValue: animatedValue,
                 layout: widget.layout,
                 children: widget.children
@@ -288,6 +284,7 @@ class CustomMultiLayoutRenderObject extends RenderBox
         _radius = radius,
         _animatedValue = animatedValue,
         _layoutDirection = layout;
+
   @override
   void setupParentData(RenderBox child) {
     if (child.parentData is! CustomMultiLayoutParentData) {
@@ -300,7 +297,6 @@ class CustomMultiLayoutRenderObject extends RenderBox
     BoxConstraints constraints = this.constraints;
     RenderBox? child;
     Offset? center;
-    Size? childSize;
     CustomMultiLayoutParentData childParentData;
     var children = getChildrenAsList();
     double angle = pi;
