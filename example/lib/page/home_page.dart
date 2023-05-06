@@ -8,6 +8,7 @@ import 'auto_refresh_page.dart';
 import 'custom_chart_page.dart';
 import 'date_picker_page.dart';
 import 'dismissible_view_page.dart';
+import 'matrix4_example_page.dart';
 
 typedef Widget PageRouteBuilder(BuildContext context);
 class PageItem{
@@ -27,10 +28,32 @@ class HomePage extends StatelessWidget{
     PageItem(title: "AnimatedMenu Page",builder: (BuildContext context)=>AnimatedMenuPage()),
     //DismissibleViewPage
     PageItem(title: "DismissibleView Page",builder: (BuildContext context)=>DismissibleViewPage()),
+    //Matrix4ExamplePage
+    PageItem(title: "Matrix4Example Page",builder: (BuildContext context)=>Matrix4ExamplePage()),
   ];
   @override
   Widget build(BuildContext context) {
    return Scaffold(
+     drawer: Column(
+       children: [
+         Container(
+           height: 100,
+           width: double.infinity,
+           color: Colors.green,
+         ),
+         Container(
+           height: 100,
+           width: double.infinity,
+           color: Colors.green,
+         ),
+         Container(
+           height: 100,
+           width: double.infinity,
+           color: Colors.green,
+         )
+       ],
+     ),
+     drawerEnableOpenDragGesture: true,
      appBar: AppBar(
        title: Text("Home"),
      ),

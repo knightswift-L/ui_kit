@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:ui_kit/toast.dart';
 import 'package:ui_kit_example/page/home_page.dart';
@@ -16,6 +18,7 @@ class CustomApp extends StatelessWidget{
       title: 'Custom App Exercise',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        platform: TargetPlatform.linux
       ),
       home: Builder(builder: (BuildContext context){
         Toast().init(context);
