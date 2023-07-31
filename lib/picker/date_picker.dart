@@ -80,12 +80,11 @@ class _DatePickerState extends State<DatePicker> {
         builder: (BuildContext context, BoxConstraints constraints) => Container(
               height: constraints.maxHeight,
               width: constraints.maxWidth,
-              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
+              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   WheelListView(
-                    key: UniqueKey(),
                     width: constraints.maxWidth / 4,
                     height: constraints.maxHeight,
                     itemHeight: 40,
@@ -102,7 +101,6 @@ class _DatePickerState extends State<DatePicker> {
                     initialPosition: year! - 1970,
                   ),
                   WheelListView(
-                    key: UniqueKey(),
                     width: constraints.maxWidth / 4,
                     height: constraints.maxHeight,
                     itemHeight: 40,
@@ -117,7 +115,6 @@ class _DatePickerState extends State<DatePicker> {
                     initialPosition: month! - 1,
                   ),
                   WheelListView(
-                    key: UniqueKey(),
                     width: constraints.maxWidth / 4,
                     height: constraints.maxHeight,
                     itemHeight: 40,

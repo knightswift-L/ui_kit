@@ -60,7 +60,7 @@ class _Matrix4ExamplePageState extends State<Matrix4ExamplePage>
     return Scaffold(
       body: GestureDetector(
         onHorizontalDragStart: (DragStartDetails details) {
-          if (details.globalPosition.dx < 50 && distance != threshold) {
+          if (details.globalPosition.dx < width * 0.25 && distance != threshold) {
             distance = 0;
           }
           },
@@ -95,39 +95,59 @@ class _Matrix4ExamplePageState extends State<Matrix4ExamplePage>
             children: [
               Transform(
                 transform:
-                    Matrix4.rotationY(pi / 2 * (1 - distance / threshold)),
+                    Matrix4.rotationY(-pi / 2 * (1 - distance / threshold)),
                 alignment: Alignment.centerLeft,
                 child: Container(
                     width: MediaQueryData.fromWindow(window).size.width * 0.7,
                     height: double.infinity,
                     color: Colors.blue,
-                    alignment: Alignment.center,
-                    child: const Text(
-                      "Body",
-                      style: TextStyle(fontSize: 30),
+                    child:SafeArea(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [IntrinsicHeight(
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage:Image.network("https://w.wallhaven.cc/full/1p/wallhaven-1pd1o9.jpg",width:200,height:200,fit: BoxFit.cover,).image
+                                ),
+                                SizedBox(width: 10,),
+                                Expanded(child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: const [
+                                    SizedBox(height: 10,),
+                                    Text("Knight Swift",style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold
+                                    ),),
+                                    SizedBox(height: 10,),
+                                    Text("knightswift@163.com"),
+                                  ],
+                                ))
+                              ],
+                            ),
+                          )],
+                        ),
+                      ),
                     )),
               ),
               Transform.translate(
-                offset: Offset(distance, 0),
+                offset: Offset(distance * 0.5, 0),
                 child: Transform(
                   alignment: Alignment.centerRight,
-                  transform: Matrix4.rotationY(distance <= 0 ? -0 : -acos((width - width * 0.7 * sin(pi / 2 * (distance / threshold)) + distance) / width)),
+                  transform: Matrix4.rotationY(distance <= 0 ? 0 :acos((width - width * 0.7 * sin(pi / 2 * (distance / threshold))+distance * 0.5) / width)),
                   child: Container(
                       color: Colors.green.withOpacity(0.5),
                       width: MediaQueryData.fromWindow(window).size.width,
                       height: double.infinity,
-                      child: ListView.builder(
-                        itemBuilder: (BuildContext context, int index) {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 20),
-                            child: Text(
-                              "Body",
-                              style: TextStyle(inherit: false, fontSize: 30),
-                            ),
-                          );
-                        },
-                        itemCount: 100,
+                      child: Column(
+                        children: [
+                          Image.network("https://w.wallhaven.cc/full/1p/wallhaven-1pd1o9.jpg",fit: BoxFit.fitWidth,width: 100,),
+                          Image.network("https://w.wallhaven.cc/full/1p/wallhaven-1pd1o9.jpg",fit: BoxFit.fitWidth,),
+                          const Text("knightswift@163.com"),
+                        ],
                       )),
                 ),
               ),

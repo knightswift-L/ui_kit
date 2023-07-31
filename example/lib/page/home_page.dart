@@ -9,6 +9,7 @@ import 'custom_chart_page.dart';
 import 'date_picker_page.dart';
 import 'dismissible_view_page.dart';
 import 'matrix4_example_page.dart';
+import 'nest_scroll_view_page.dart';
 
 typedef Widget PageRouteBuilder(BuildContext context);
 class PageItem{
@@ -21,8 +22,8 @@ class HomePage extends StatelessWidget{
   final List<PageItem> pageItems = [
     PageItem(title: "Custom Chart Page",builder: (BuildContext context)=>CustomChartPage()),
     PageItem(title: "Toast Page",builder: (BuildContext context)=>ToastPage()),
-    PageItem(title: "AutoRefresh Page",builder: (BuildContext context)=>AutoRefreshPage()),
-    PageItem(title: "ImagePreView Page",builder: (BuildContext context)=>ImagePreViewPage()),
+    // PageItem(title: "AutoRefresh Page",builder: (BuildContext context)=>AutoRefreshPage()),
+    // PageItem(title: "ImagePreView Page",builder: (BuildContext context)=>ImagePreViewPage()),
     PageItem(title: "DatePicker Page",builder: (BuildContext context)=>DatePickerPage()),
     //AnimatedMenuPage
     PageItem(title: "AnimatedMenu Page",builder: (BuildContext context)=>AnimatedMenuPage()),
@@ -30,6 +31,8 @@ class HomePage extends StatelessWidget{
     PageItem(title: "DismissibleView Page",builder: (BuildContext context)=>DismissibleViewPage()),
     //Matrix4ExamplePage
     PageItem(title: "Matrix4Example Page",builder: (BuildContext context)=>Matrix4ExamplePage()),
+    //NestScrollViewPage
+    // PageItem(title: "NestScrollView Page",builder: (BuildContext context)=>NestScrollViewPage()),
   ];
   @override
   Widget build(BuildContext context) {

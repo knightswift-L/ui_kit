@@ -29,18 +29,15 @@ class _WheelListViewState extends State<WheelListView> {
   late List<String> items;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     items = widget.items;
-    _controller =
-        FixedExtentScrollController(initialItem: widget.initialPosition);
+    _controller = FixedExtentScrollController(initialItem: widget.initialPosition);
   }
 
   @override
   void didUpdateWidget(covariant WheelListView oldWidget) {
     items = widget.items;
-    _controller =
-        FixedExtentScrollController(initialItem: widget.initialPosition);
+    _controller = FixedExtentScrollController(initialItem: widget.initialPosition);
     super.didUpdateWidget(oldWidget);
   }
 

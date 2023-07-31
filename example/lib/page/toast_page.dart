@@ -19,23 +19,17 @@ class ToastPage extends StatelessWidget{
                    style: TextStyle(inherit:false,fontSize: 18,color: Colors.red),backgroundColor: Colors.blue);
              }, child: Text("Normal Toast",)),
             TextButton(onPressed: ()async{
-              // showToast(customWidget: Container(
-              //   width: 200,
-              //   height: 50,
-              //   decoration: BoxDecoration(
-              //     borderRadius: BorderRadius.circular(10),
-              //     color: Colors.black12
-              //   ),
-              //   alignment: Alignment.center,
-              //   child: Text("I'm a custom Toast",style: TextStyle(inherit: false,fontSize: 18),),
-              // ),
-              // );
-
-              ////              //https://metamask.app.link
-              // //               //https://xyz-dev.auto-compound.com/index.html
-                            if( await canLaunchUrl(Uri.parse("https://metamask.app.link/dapp/xyz-dev.auto-compound.com/index.html"))){
-                                  launchUrl(Uri.parse("https://metamask.app.link/dapp/xyz-dev.auto-compound.com/index.html"),mode: LaunchMode.externalNonBrowserApplication);
-                            }
+              showToast(customWidget: Container(
+                width: 200,
+                height: 50,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.black12
+                ),
+                alignment: Alignment.center,
+                child: Text("I'm a custom Toast",style: TextStyle(inherit: false,fontSize: 18),),
+              ),
+              );
             }, child: Text("Custom Toast"))
           ],
         ),

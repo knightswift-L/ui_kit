@@ -23,6 +23,7 @@ class _DismissibleViewPageState extends State<DismissibleViewPage>{
             return DismissibleView(actionView: [
               GestureDetector(
                 onTap: (){
+                  print("Delete");
                 },
                 child: Container(width: 60,color: Colors.blue,child: Text("Delete"),alignment: Alignment.center,),
               ),
@@ -31,8 +32,8 @@ class _DismissibleViewPageState extends State<DismissibleViewPage>{
               onTap: (){
                 Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>CustomChartPage()));
               },
-              child: Container(width: double.infinity,height: 50, color: Colors.red,
-                child: const Text("D/EGL_emulation( 4323): app_time_stats: avg=4249.76ms min=4249.76ms max=4249.76ms count=1"),
+              child: Container(width: double.infinity,height: 50, color: Colors.white,
+                child: const Text("I'm a dismissible View"),
             ),),);
           },itemCount: 100,),
       )

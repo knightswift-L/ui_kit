@@ -5,7 +5,7 @@ typedef void _OnChanged(String value);
 class PasswordInputView extends StatefulWidget {
   final _OnChanged change;
   final double height;
-  PasswordInputView({required this.change, this.height = 100}) : assert(change != null);
+  PasswordInputView({required this.change, this.height = 100});
   @override
   State<StatefulWidget> createState() {
     return _PasswordInputViewState();
@@ -30,7 +30,7 @@ class _PasswordInputViewState extends State<PasswordInputView> {
         onTap: () {
           _focusNode!.requestFocus();
         },
-        child: Container(
+        child: SizedBox(
           height: widget.height,
           width: double.infinity,
           child: Row(
@@ -38,21 +38,21 @@ class _PasswordInputViewState extends State<PasswordInputView> {
               SizedBox(
                 width: 1,
                 child: TextField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     border: InputBorder.none
                   ),
                   focusNode: _focusNode,
                   controller: _controller,
                   onChanged: (String value) {
                     setState(() {
-                      if (value == null && value.length > 0) {
+                      if (value == null && value.isNotEmpty) {
                         _value!.fillRange(0, _value!.length, "");
                       } else {
-                        List<String> _temp = value.split("");
-                        for (int index = 0; index < _temp.length; index++) {
-                          _value![index] = _temp[index];
+                        List<String> temp = value.split("");
+                        for (int index = 0; index < temp.length; index++) {
+                          _value![index] = temp[index];
                         }
-                        _value!.fillRange(_temp.length, _value!.length, "");
+                        _value!.fillRange(temp.length, _value!.length, "");
                       }
                       if (value.length == 6) {
                         _focusNode!.unfocus();
@@ -68,6 +68,7 @@ class _PasswordInputViewState extends State<PasswordInputView> {
             ]..add(
                 Expanded(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List<Widget>.generate(
                       6,
                           (index) => Container(
@@ -75,10 +76,9 @@ class _PasswordInputViewState extends State<PasswordInputView> {
                         width: widget.height,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(color: Colors.white, border: Border.all(color: Colors.black26, width: 1)),
-                        child: _value![index] == "" ? SizedBox() : DotView(),
+                        child: _value![index] == "" ? const SizedBox() : DotView(),
                       ),
                     ),
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   ),
                 ),
               ),
@@ -88,12 +88,14 @@ class _PasswordInputViewState extends State<PasswordInputView> {
 }
 
 class DotView extends StatelessWidget {
+  const DotView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 10,
       height: 10,
-      decoration: BoxDecoration(color: Colors.black87, borderRadius: BorderRadius.all(Radius.circular(5))),
+      decoration: const BoxDecoration(color: Colors.black87, borderRadius: BorderRadius.all(Radius.circular(5))),
     );
   }
 }
